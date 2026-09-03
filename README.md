@@ -33,18 +33,48 @@ Para garantizar la estabilidad y evitar inconsistencias, las responsabilidades e
 
 ---
 
-## 📌 Alcance del MVP (Mínimo Producto Viable)
+## 👤 Funcionalidades por Rol
+
+### 🔹 Cliente
+* Solicitar nuevos turnos mediante el chat conversacional.
+* Consultar el estado de sus turnos activos o pasados.
+* Cancelar turnos previamente agendados.
+
+### 🔹 Profesional (Administrador)
+* Gestionar servicios (alta, baja y modificación de precios/duración).
+* Configurar horarios de atención y días de disponibilidad.
+* Visualizar y gestionar la agenda completa de atenciones en su panel.
+
+---
+
+## 📌 Alcance del MVP y Reglas de Negocio
 
 ### 🟢 Incluido en el MVP
-* Autenticación básica para Clientes y Profesional (Admin).
-* Chat conversacional para solicitud, consulta de disponibilidad y reserva de turnos.
-* Módulo de fallback (soporte por interfaz gráfica simple si la IA no logra interpretar la solicitud).
-* Panel de administración (Dashboard) para el profesional: gestión de horarios de atención, listado de servicios y visualización de agenda.
+* **Autenticación básica:** Roles diferenciados para Clientes y Profesional.
+* **Chat conversacional:** Para solicitud, consulta y cancelación de turnos.
+* **Reglas mínimas de reserva:** 
+  * *Confirmación:* Un turno se confirma solo si hay disponibilidad en la Base de Datos.
+  * *Cancelación:* El cliente o el profesional pueden cancelar un turno cambiando su estado a `CANCELADO` y liberando la agenda.
+  * *Reprogramación:* Se gestiona mediante la cancelación del turno actual y la creación de una nueva reserva.
+* **Dashboard del Profesional:**
+  * Vista rápida de **turnos del día** y **próximos turnos** de la semana.
+  * Métrica simple de ocupación (turnos agendados vs. horarios libres).
+  * Gestión básica de servicios y disponibilidad.
+* **Módulo de fallback:** Soporte por interfaz gráfica simple si la IA no logra interpretar la solicitud.
 
 ### 🔴 Fuera del MVP (Para futuras versiones)
 * Pasarelas de pago online o cobro de señas (Mercado Pago).
 * Integración directa con la API oficial de WhatsApp.
 * Gestión multiespacio o de múltiples empleados por cuenta.
+
+---
+
+## ☁️ Estrategia de Deploy (Publicación)
+
+El proyecto será desplegado en entornos de producción utilizando los siguientes servicios:
+* **Frontend:** Vercel / Netlify
+* **Backend:** Render / Railway
+* **Base de Datos:** Aiven / PlanetScale (MySQL)
 
 ---
 

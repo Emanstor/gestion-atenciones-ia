@@ -1,0 +1,40 @@
+-- Script de creación de tablas para MySQL
+-- Trabajo Integrador Final - Emanuel López y Santino Del Corro
+
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    telefono VARCHAR(20) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    rol ENUM('CLIENTE', 'PROFESIONAL') NOT NULL DEFAULT 'CLIENTE'
+);
+
+CREATE TABLE IF NOT EXISTS servicios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    duracion_minutos INT NOT NULL,
+    precio DECIMAL(10, 2) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS disponibilidad (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    profesional_id INT NOT NULL,
+    dia_semana INT NOT NULL CHECK (dia_semana BETWEEN 1 AND 7),
+    hora_inicio TIME NOT NULL,
+    hora_fin TIME NOT NULL,
+    FOREIGN KEY (profesional_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS turnos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_id INT NOT NULL,
+    profesional_id INT NOT NULL,
+    servicio_id INT NOT NULL,
+    fecha_hora_inicio DATETIME NOT NULL,
+    fecha_hora_fin DATETIME NOT NULL,
+    estado ENUM('CONFIRMADO', 'CANCELADO', 'COMPLETADO') DEFAULT 'CONFIRMADO',
+    FOREIGN KEY (cliente_id) REFERENCES usuarios(id),
+    FOREIGN KEY (profesional_id) REFERENCES usuarios(id),
+    FOREIGN KEY (servicio_id) REFERENCES servicios(id)
+);

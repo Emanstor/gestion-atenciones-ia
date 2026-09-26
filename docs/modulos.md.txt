@@ -1,0 +1,17 @@
+# Listado de Módulos Funcionales (MVP)
+
+## 1. Módulo de Autenticación y Usuarios (Prioridad: Alta)
+* **Descripción:** Gestión de registro, inicio de sesión y asignación de roles de usuario (Cliente y Profesional).
+* **Alcance:** Control de acceso a la plataforma, protección de rutas en el backend y validación de credenciales.
+
+## 2. Módulo Conversacional / IA (Prioridad: Alta)
+* **Descripción:** Interfaz de chat donde el modelo de IA actúa como intérprete de lenguaje natural.
+* **Alcance:** Recibe la intención de reserva expresada por el usuario, extrae los parámetros clave (servicio, fecha y hora) y los envía estructurados en formato JSON hacia la API del Backend.
+
+## 3. Módulo de Gestión de Turnos y Agenda (Prioridad: Alta)
+* **Descripción:** Núcleo de la lógica de negocio en el Backend.
+* **Alcance:** Consulta la disponibilidad en la base de datos, aplica las validaciones para evitar solapamientos de horarios, registra nuevos turnos confirmados y permite la cancelación de citas.
+
+## 4. Módulo de Configuración de Servicios y Disponibilidad (Prioridad: Media)
+* **Descripción:** Panel de administración operativo configurado por el profesional.
+* **Alcance:** Gestión (Alta, Baja y Modificación) de los servicios ofrecidos (definiendo nombre, precio y duración en minutos) y carga de los rangos horarios de atención semanales.

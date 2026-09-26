@@ -1,0 +1,13 @@
+# Arquitectura del Sistema
+
+## 1. Patrón Arquitectónico
+Arquitectura en capas desacoplada (Cliente-Servidor):
+* **Frontend:** React.js
+* **Backend:** Node.js con Express (API REST)
+* **IA Intérprete:** Servicio conversacional intermediario conectado vía API.
+* **Base de Datos:** MySQL (Relacional)
+
+## 2. Justificación Técnica
+* **Node.js + Express:** Manejo asíncrono eficiente para peticiones en tiempo real.
+* **MySQL:** Consistencia ACID estricta para evitar solapamientos y reservas duplicadas.
+* **Desacoplamiento de la IA:** La IA solo traduce lenguaje natural a JSON. Las validaciones de negocio residen exclusivamente en el Backend.

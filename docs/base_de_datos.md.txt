@@ -1,0 +1,57 @@
+# Propuesta de Modelo de Datos - MVP
+
+**Proyecto:** Sistema de Control y Gestión Inteligente de Atenciones Profesionales mediante IA  
+**Integrantes:** Emanuel López y Santino Del Corro  
+**Tutora Académica:** María Candela Grosso  
+
+## 1. Tablas Principales de la Base de Datos
+
+### A. Tabla `usuarios`
+Almacena la información de los clientes y del profesional.
+* **`id`** (INT, Clave Primaria, Autoincremental)
+* **`nombre`** (VARCHAR)
+* **`email`** (VARCHAR)
+* **`telefono`** (VARCHAR, Restricción UNIQUE): Identificador único del cliente en el chat.
+* **`password`** (VARCHAR): Encriptada.
+* **`rol`** (ENUM: 'CLIENTE' o 'PROFESIONAL')
+
+### B. Tabla `servicios`
+Oferta de atenciones que brinda el profesional.
+* **`id`** (INT, Clave Primaria, Autoincremental)
+* **`nombre`** (VARCHAR)
+* **`duracion_minutos`** (INT)
+* **`precio`** (DECIMAL)
+
+### C. Tabla `disponibilidad`
+Días y franjas horarias de trabajo configuradas por el profesional.
+* **`id`** (INT, Clave Primaria, Autoincremental)
+* **`profesional_id`** (INT, Clave Foránea -> `usuarios.id`)
+* **`dia_semana`** (INT: 1=Lunes a 7=Domingo)
+* **`hora_inicio`** (TIME)
+* **`hora_fin`** (TIME)
+
+### D. Tabla `turnos`
+Reservas confirmadas en el sistema.
+* **`id`** (INT, Clave Primaria, Autoincremental)
+* **`cliente_id`** (INT, Clave Foránea -> `usuarios.id`)
+* **`profesional_id`** (INT, Clave Foránea -> `usuarios.id`)
+* **`servicio_id`** (INT, Clave Foránea -> `servicios.id`)
+* **`fecha_hora_inicio`** (DATETIME)
+* **`fecha_hora_fin`** (DATETIME): Calculada por el backend sumando la duración del servicio y almacenada de forma fija.
+* **`estado`** (ENUM: 'CONFIRMADO', 'CANCELADO', 'COMPLETADO')
+
+## 2. Relaciones entre Entidades
+1. **`usuarios` (Clientes) → `turnos` (1 a Muchos)**
+2. **`usuarios` (Profesionales) → `turnos` (1 a Muchos)**
+3. **`servicios` → `turnos` (1 a Muchos)**
+4. **`usuarios` (Profesionales) → `disponibilidad` (1 a Muchos)**
+
+## 3. Ejemplo de Flujo
+1. **Mensaje del cliente:** *"Hola, quisiera un turno para corte de pelo el sábado a las 15 hs"*.
+2. **Interpretación de la IA (JSON):**
+   ```json
+   {
+     "telefono_cliente": "3511234567",
+     "servicio_nombre": "Corte de pelo",
+     "fecha_hora": "2026-09-05 15:00:00"
+   }

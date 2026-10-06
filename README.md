@@ -8,145 +8,146 @@
 
 ## 📋 Descripción del Proyecto
 
-Plataforma web pensada para profesionales independientes y comercios de proximidad (barberías, consultorios, centros de estética, etc.) que automatiza la administración de turnos. El sistema integra un **Asistente Virtual de IA Conversacional** que interpreta Lenguaje Natural (PLN) para agilizar la interacción con el cliente, delegando la validación y el control operativo al Backend.
-
----
-# 🎯 Circuito Principal (Flujo del Sistema)
-
-### Acceso e Identificación (Seguridad)
-* **Ingreso:** El cliente ingresa a la WebApp.
-* **Autenticación:** Para proteger sus datos e historial, se identifica mediante su **Número de Teléfono** y **Contraseña**.
-* **Persistencia:** En dispositivos móviles, la sesión permanece activa para agilizar el uso cotidiano.
+Plataforma web diseñada para profesionales independientes y comercios de proximidad (barberías, consultorios, centros de estética, etc.) que automatiza la administración de turnos. El sistema integra un **Asistente Virtual de IA Conversacional** que interpreta Lenguaje Natural (PLN) para agilizar la interacción con el cliente, delegando la validación y el control operativo al Backend.
 
 ---
 
-### Canal Principal (IA Conversacional)
-1. **Solicitud:** El cliente pide un turno por el Chat Web en lenguaje natural *(ej: "¿Tenés lugar para un corte mañana a las 16hs?")*.
-2. **Procesamiento:** La IA interpreta el mensaje y extrae los datos clave (servicio, fecha, horario deseado).
-3. **Validación:** La IA envía la solicitud estructurada (`JSON`) al Backend. El Backend consulta la disponibilidad en la Base de Datos (**MySQL**) y aplica las reglas de negocio.
-4. **Respuesta:** El Backend devuelve los horarios disponibles o la confirmación del turno.
-5. **Confirmación:** La IA redacta una respuesta amigable al cliente y el Backend registra la cita en el sistema.
+## 🎯 Circuito Principal (Flujo del Sistema)
+
+1. **Acceso e Identificación (Seguridad):**
+   - El cliente ingresa a la WebApp.
+   - En su primer ingreso, se registra indicando su **Nombre, Apellido, Número de Teléfono, Contraseña** y, de forma opcional, un **Email** para recibir anuncios.
+   - Para proteger sus datos e historial en accesos posteriores, el inicio de sesión se realiza únicamente mediante su **Número de Teléfono y Contraseña**.
+   - En dispositivos móviles, la sesión se mantiene guardada para agilizar el uso cotidiano.
+
+2. **Canal Principal (IA Conversacional):**
+   - **Solicitud:** El cliente pide un turno por el Chat Web en lenguaje natural (ej: *"¿Tenés lugar para un corte mañana a las 16hs?"*).
+   - **Procesamiento:** La IA interpreta el mensaje y extrae los datos clave (servicio, fecha, horario).
+   - **Validación:** La IA envía la solicitud estructurada (JSON) al Backend. El Backend consulta la disponibilidad en la Base de Datos (MySQL) y aplica las reglas de negocio.
+   - **Confirmación:** El Backend devuelve la respuesta y la IA redacta un mensaje amigable confirmando la cita.
+
+3. **Módulo de Fallback (Contingencia ante Fallos de IA):**
+   Si la IA no comprende la solicitud tras múltiples intentos o la API no responde, el sistema **nunca bloquea al usuario** y despliega 3 opciones de escape instantáneas:
+   - **1. Reserva Manual:** Grilla horaria/calendario interactivo para seleccionar turno disponible directamente en el Backend.
+   - **2. Contacto por WhatsApp:** Enlace directo con mensaje prellenado para comunicarse con el local.
+   - **3. Atención Presencial:** Ficha con dirección física, horarios de atención y enlace a Google Maps.
 
 ---
 
-### Módulo de Fallback (Contingencia ante Fallos de la IA)
-Si la IA no logra comprender la solicitud o el servicio de la API no está disponible, el sistema **nunca bloquea la reserva** y activa 3 opciones de escape instantáneas:
-
-1. 📅 **Reserva Manual:** Calendario e interfaz con grilla de turnos libres para agendar directamente en el Backend.
-2. 💬 **Contacto por WhatsApp:** Redirección al WhatsApp del local con un mensaje prellenado de ayuda.
-3. 📍 **Atención Presencial:** Muestra dirección física, horarios de atención y enlace a Google Maps.
-
----
-
-# 🏗️ Arquitectura y Responsabilidades
+## 🏗️ Arquitectura y Responsabilidades
 
 Para garantizar la estabilidad y evitar inconsistencias, las responsabilidades están estrictamente delimitadas:
 
-* 🤖 **IA (Interpretador Conversacional):** Su función se limita a la interfaz conversacional. Interpreta la intención del usuario, extrae parámetros estructurados y redacta la respuesta final. *No ejecuta reglas de negocio ni accede directamente a la base de datos.*
-* ⚙️ **Backend (Lógica de Negocio):** Es el núcleo operativo (**Node.js / Express**). Valida los datos recibidos de la IA, consulta la disponibilidad real, aplica restricciones de agenda, registra/cancela turnos y maneja la persistencia.
-* 🗄️ **Base de Datos (Persistencia):** Almacena la información del sistema (**MySQL**): usuarios, servicios, agendas y estados de los turnos.
-* 💻 **Frontend (Interfaz de Usuario):** Interfaz web (**React**) para que el cliente interactúe con el chat/fallback y para que el profesional administre su agenda.
+- 🤖 **IA (Interpretador Conversacional):** Su función se limita a la interfaz conversacional. Interpreta la intención del usuario, extrae parámetros estructurados y redacta la respuesta final. No ejecuta reglas de negocio ni accede directamente a la base de datos.
+- ⚙️ **Backend (Lógica de Negocio):** Es el núcleo operativo (Node.js/Express). Valida los datos recibidos de la IA, consulta la disponibilidad real, aplica restricciones de agenda, registra/cancela turnos y maneja la persistencia.
+- 🗄️ **Base de Datos (Persistencia):** Almacena la información del sistema (MySQL): usuarios, servicios, agendas y estados de los turnos.
+- 💻 **Frontend (Interfaz de Usuario):** Interfaz web (React) para que el cliente interactúe con el chat/fallback y para que el profesional administre su agenda.
 
 ---
 
-# 👤 Funcionalidades por Rol
+## 👤 Funcionalidades por Rol
 
 ### 🔹 Cliente
-* Registro e inicio de sesión mediante **Teléfono + Contraseña**.
-* Solicitar nuevos turnos mediante el chat conversacional asistido por IA.
-* Módulo de contingencia (reserva manual, WhatsApp o ubicación) ante fallos de la IA.
-* Consultar el estado de sus turnos activos o pasados.
-* Cancelar turnos previamente agendados.
+- Registro inicial (Nombre, Apellido, Teléfono, Contraseña, Email opcional) e inicio de sesión seguro (Teléfono + Contraseña).
+- Solicitar nuevos turnos mediante el chat conversacional asistido por IA.
+- Módulo de contingencia (reserva manual, WhatsApp o mapa) ante fallos de IA.
+- Consultar y cancelar turnos activos desde su perfil.
 
-### 🔹 Profesional (Administrador)
-* Gestionar servicios (alta, baja y modificación de precios/duración).
-* Configurar horarios de atención y días de disponibilidad.
-* Visualizar y gestionar la agenda completa de atenciones en su panel (**Dashboard**).
-* Métrica simple de ocupación (turnos agendados vs. horarios libres).
+### 🔹 Profesional / Administrador
+- Configurar servicios (alta, baja, modificación de precios y duración).
+- Configurar horarios de atención y días de disponibilidad.
+- Dashboard de gestión: vista de turnos del día, próximos turnos y métricas de ocupación.
 
 ---
 
-# 📌 Alcance del MVP y Reglas de Negocio
+## 📌 Alcance del MVP y Reglas de Negocio
 
 ### 🟢 Incluido en el MVP
-* **Modelo Unipersonal / Mono-profesional:** El sistema está diseñado para la gestión de un negocio operado por un único profesional/dueño.
-* **Autenticación diferenciada:** Clientes (Teléfono + Clave) y Profesional (Credenciales Admin).
-* **Chat conversacional:** Con procesamiento de lenguaje natural y Módulo de Fallback triple.
-* **Reglas mínimas de reserva:**
-  * **Confirmación:** Un turno se confirma solo si hay disponibilidad real en la Base de Datos.
-  * **Cancelación:** El cliente o el profesional pueden cancelar un turno cambiando su estado a `CANCELADO` y liberando la agenda.
-  * **Reprogramación:** Se gestiona mediante la cancelación del turno actual y la creación de una nueva reserva.
-* **Dashboard del Profesional:** Vista rápida de turnos del día, próximos turnos de la semana y métricas simples.
+- **Alcance Unipersonal:** El sistema está diseñado para la gestión de un negocio operado por un único profesional/dueño (mono-profesional).
+- **Autenticación:** Roles diferenciados para Clientes (Registro completo e inicio con Teléfono + Clave) y Profesional (Credenciales Admin).
+- **Chat conversacional:** Con procesamiento de lenguaje natural y Módulo de Contingencia triple.
+- **Reglas de reserva:** Confirmación en tiempo real según disponibilidad en MySQL, cancelación y reprogramación.
+- **Dashboard del Profesional:** Vista rápida de agenda y métricas simples de ocupación.
 
 ### 🔴 Fuera del MVP (Para futuras versiones)
-* Pasarelas de pago online o cobro de señas (ej. Mercado Pago).
-* Integración directa con la API oficial de WhatsApp (en el MVP se utiliza enlace directo `wa.me`).
-* Gestión multiespacio o de múltiples empleados por cuenta.
+- Pasarelas de pago online o cobro de señas (Mercado Pago).
+- Integración directa con la API oficial de WhatsApp (en el MVP se usa link directo `wa.me`).
+- Gestión multiespacio o de múltiples empleados por cuenta.
 
 ---
 
-# ☁️ Estrategia de Deploy (Publicación)
+## ☁️ Estrategia de Deploy (Publicación)
 
-El proyecto será desplegado en entornos de producción utilizando los siguientes servicios:
-
-* **Frontend:** Vercel / Netlify
-* **Backend:** Render / Railway
-* **Base de Datos:** Aiven / PlanetScale (MySQL)
+- **Frontend:** Vercel / Netlify
+- **Backend:** Render / Railway
+- **Base de Datos:** Aiven / PlanetScale (MySQL)
 
 ---
 
-# 🛠️️ Stack Tecnológico
+## 🛠️ Stack Tecnológico
 
-| Capa | Tecnología |
-| :--- | :--- |
-| **Frontend** | React.js |
-| **Backend** | Node.js con Express |
-| **Base de Datos** | MySQL |
-| **IA** | API de LLM (OpenAI / Groq) con soporte para *Function Calling* |
+- **Frontend:** React.js
+- **Backend:** Node.js con Express
+- **Base de Datos:** MySQL
+- **IA:** API de LLM (OpenAI / Groq) con soporte para Function Calling
 
 ---
 
-# 👥 Equipo de Desarrollo
+## 👥 Equipo de Desarrollo
 
 | Nombre | Rol |
 | :--- | :--- |
 | **Emanuel López** | Desarrollador Full Stack |
 | **Santino Del Corro** | Desarrollador Full Stack |
 
-> 🎓 *Proyecto desarrollado como Trabajo Integrador Final para la carrera.*
+*Proyecto desarrollado como Trabajo Integrador Final para la carrera.*
+
+---
 
 ## 📐 Diagrama de Flujo del Sistema (Circuito Principal y Contingencia)
 
 ```mermaid
 flowchart LR
+    %% ESTILOS VISUALES
+    classDef default fill:#1f2937,stroke:#4b5563,color:#fff,stroke-width:1px;
+    classDef highlight fill:#1e3a8a,stroke:#3b82f6,color:#fff,stroke-width:2px;
+    classDef fallback fill:#581c87,stroke:#9333ea,color:#fff,stroke-width:2px;
+
+    %% SUBGRAPH 1: AUTENTICACIÓN
     subgraph S1 ["1. Acceso y Seguridad"]
         direction TB
         A([Cliente entra a WebApp]) --> B{¿Sesión activa?}
         B -- No --> C{¿Registrado?}
-        C -- No --> D[Registro: Teléfono y Clave]
-        C -- Sí --> F[Login: Teléfono y Clave]
-        B -- Sí --> E[Chat WebApp]
+        C -- No --> D["Registro: Nombre, Apellido,<br>Teléfono, Clave, Email (opcional)"]
+        C -- Sí --> F[Login: Teléfono + Clave]
+        B -- Sí --> E[Pantalla Chat WebApp]
         D --> E
         F --> E
     end
 
+    %% SUBGRAPH 2: CANAL IA
     subgraph S2 ["2. Reserva por IA"]
         direction TB
-        E --> G[Solicita turno por Chat]
+        E --> G[Cliente pide turno por Chat]
         G --> H[IA valida con Backend]
         H --> I{¿IA activa y hay cupo?}
-        I -- Sí --> J[Backend reserva en DB]
-        J --> K[IA confirma reserva]
+        I -- Sí --> J[Backend reserva en DB] --> K[IA confirma reserva]
         I -- No / Error --> L[Alerta: IA No Disponible]
     end
 
-    subgraph S3 ["3. Módulo de Fallback"]
+    %% SUBGRAPH 3: FALLBACK TRIPLE
+    subgraph S3 ["3. Módulo de Contingencia"]
         direction TB
-        L --> M1["1. Reserva Manual - Calendario"]
-        L --> M2["2. Contacto por WhatsApp"]
-        L --> M3["3. Dirección y Google Maps"]
+        L --> M1["📅 1. Reserva Manual (Calendario)"]
+        L --> M2["💬 2. Contacto por WhatsApp"]
+        L --> M3["📍 3. Dirección y Google Maps"]
         M1 --> N[Reserva directa en DB]
     end
 
-    S1 --> S2
-    S2 --> S3
+    %% CONEXIONES PRINCIPALES
+    S1 ==> S2
+    S2 ==> S3
+
+    class S1 highlight;
+    class S2 highlight;
+    class S3 fallback;

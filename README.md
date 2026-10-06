@@ -1,21 +1,20 @@
-🚀 Sistema de Control y Gestión Inteligente de Atenciones Profesionales mediante IA Conversacional
+# 🚀 Sistema de Control y Gestión Inteligente de Atenciones Profesionales mediante IA Conversacional
 
-Trabajo Integrador Final | Tesis de Carrera
+**Trabajo Integrador Final | Tesis de Carrera**  
+**Integrantes:** Emanuel López & Santino Del Corro  
+**Tutora Académica:** María Candela Grosso  
 
-Integrantes: Emanuel López & Santino Del Corro
+---
 
-Tutora Académica: María Candela Grosso
+## 📋 Descripción del Proyecto
 
-Institución: Universidad Tecnológica Nacional (UTN)
+Plataforma web diseñada para profesionales independientes y comercios de proximidad (barberías, consultorios, centros de estética, etc.) que automatiza la administración de turnos. El sistema integra un **Asistente Virtual de IA Conversacional** que interpreta Lenguaje Natural (PLN) para agilizar la interacción con el cliente, delegando la validación y el control operativo al Backend.
 
-📋 Descripción del Proyecto
+---
 
-Plataforma web pensada para profesionales independientes y comercios de proximidad que automatiza la administración de turnos. El sistema integra un Asistente Virtual de IA Conversacional que interpreta Lenguaje Natural (PLN) para agilizar la interacción con el cliente, delegando la validación, persistencia y control operativo al Backend.
+## 📐 Diagrama de Flujo del Sistema (Circuito Principal y Contingencia)
 
-🎯 Circuito Principal y Diagrama de Flujo
-
-El flujo de atención está estructurado en tres grandes bloques para garantizar accesibilidad, velocidad y cero bloqueos en la reserva:
-
+```mermaid
 flowchart LR
     %% ESTILOS VISUALES
     classDef default fill:#1f2937,stroke:#4b5563,color:#fff,stroke-width:1px;
@@ -60,71 +59,6 @@ flowchart LR
     class S1 highlight;
     class S2 highlight;
     class S3 fallback;
-
-
-🔐 Autenticación y Registro de Usuarios
-
-Para equilibrar la usabilidad en dispositivos móviles con la seguridad de la información:
-
-Cliente Final: Se identifica mediante un registro ágil con Nombre, Apellido, Teléfono y Contraseña. El número de teléfono actúa como identificador único para asociar el historial de turnos. En navegadores móviles, la sesión permanece guardada para evitar logueos innecesarios, pero exige contraseña ante accesos en nuevos dispositivos.
-
-Profesional / Administrador: Utiliza un acceso mediante credenciales tradicionales (Email/Usuario y Contraseña) con rol ADMIN para acceder al Dashboard de gestión.
-
-🛠️ Módulo de Fallback (Contingencia ante Fallo de la IA)
-
-Si la API de la IA experimenta caídas, no logra interpretar la solicitud tras reintentos o el usuario prefiere una alternativa tradicional, la reserva jamás se bloquea. El sistema despliega un mensaje amigable junto con tres vías de acción directa:
-
-📅 Reserva Manual (Calendario): Una interfaz gráfica estática expuesta por el Backend con la grilla de turnos libres en tiempo real para agendar con un solo clic.
-
-💬 Contacto Directo por WhatsApp: Redirección automática al WhatsApp del comercio con un mensaje prellenado ("Hola, tuve un problema para agendar mi turno por la web y necesito ayuda.").
-
-📍 Atención Presencial e Información de Contacto: Ficha informativa con la dirección física del local, horarios comerciales y enlace directo a Google Maps.
-
-🏗️ Arquitectura y Responsabilidades
-
-🤖 IA (Interpretador Conversacional): Interfaz conversacional. Interpreta la intención del cliente en lenguaje natural, extrae parámetros estructurados (JSON) y redacta respuestas. No ejecuta reglas de negocio ni accede a la base de datos.
-
-⚙️ Backend (Lógica de Negocio - Node.js/Express): Núcleo del sistema. Valida datos, consulta disponibilidad real, aplica reglas de reserva, maneja la persistencia y sirve las vistas de contingencia.
-
-🗄️ Base de Datos (MySQL): Persistencia de usuarios, servicios, agendas y estados de los turnos.
-
-💻 Frontend (React.js): WebApp responsive con chat conversacional para el cliente y panel de administración para el profesional.
-
-📌 Alcance del MVP y Reglas de Negocio
-
-🟢 Incluido en el MVP
-
-Enfoque Unipersonal / Mono-profesional: El sistema está acotado a comercios de proximidad o profesionales independientes operados por un único prestador.
-
-Flujo Conversacional: Solicitud, consulta y cancelación de turnos vía chat.
-
-Autenticación diferida por rol: Cliente (Teléfono + Clave) vs Administrador (Panel de gestión).
-
-Gestión de Turnos: Confirmación condicional a disponibilidad, cancelación con liberación de horario y reprogramación (cancelación + alta nueva).
-
-Módulo de Fallback Triple: Contingencia automática visual ante fallo o degradación de la IA.
-
-Dashboard del Profesional: Configuración de agenda, abm de servicios y vista semanal de atenciones.
-
-🔴 Fuera del MVP (Futuras versiones)
-
-Pasarelas de pago online o cobro de señas (Mercado Pago).
-
-Integración con la API oficial de WhatsApp Business (se utiliza enlace directo wa.me).
-
-Gestión multi-empleado o multi-sucursal.
-
-☁️ Estrategia de Deploy
-
-Frontend: Vercel / Netlify
-
-Backend: Render / Railway
-
-Base de Datos: Aiven / PlanetScale (MySQL)
-
-🛠️ Stack Tecnológico
-
-Frontend: React.js, TailwindCSS
 
 Backend: Node.js, Express.js
 

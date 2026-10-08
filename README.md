@@ -8,7 +8,7 @@
 
 ## 📋 Descripción del Proyecto
 
-Plataforma web diseñada para profesionales independientes y comercios de proximidad (barberías, consultorios, centros de estética, etc.) que automatiza la administración de turnos. El sistema integra un **Asistente Virtual de IA Conversacional** que interpreta Lenguaje Natural (PLN) para agilizar la interacción con el cliente, delegando la validación y el control operativo al Backend.
+Plataforma web diseñada para profesionales independientes y comercios de proximidad (barberías, consultorios, centros de estética, etc.) que automatiza la administración de turnos y consultas. El sistema integra un **Asistente Virtual de IA Conversacional** que interpreta Lenguaje Natural (PLN) para agilizar la interacción con el cliente (solicitud de turnos y consulta de precios), delegando la validación y el control operativo al Backend.
 
 ---
 
@@ -21,10 +21,14 @@ Plataforma web diseñada para profesionales independientes y comercios de proxim
    - En dispositivos móviles, la sesión se mantiene guardada para agilizar el uso cotidiano.
 
 2. **Canal Principal (IA Conversacional):**
-   - **Solicitud:** El cliente pide un turno por el Chat Web en lenguaje natural (ej: *"¿Tenés lugar para un corte mañana a las 16hs?"*).
-   - **Procesamiento:** La IA interpreta el mensaje y extrae los datos clave (servicio, fecha, horario).
-   - **Validación:** La IA envía la solicitud estructurada (JSON) al Backend. El Backend consulta la disponibilidad en la Base de Datos (MySQL) y aplica las reglas de negocio.
-   - **Confirmación:** El Backend devuelve la respuesta y la IA redacta un mensaje amigable confirmando la cita.
+   - **Interacción:** El cliente se comunica por el Chat Web en lenguaje natural.
+   - **Procesamiento e Intención:** La IA interpreta el mensaje, identificando la intención del usuario. Principalmente soporta dos flujos:
+      - **A. Solicitud de Turno:** Extrae datos clave (servicio, fecha, horario).
+      - **B. Consulta de Precios:** Identifica que el cliente desea saber el costo de un servicio específico (ej: *"¿Cuánto sale un corte?"*).
+   - **Validación/Consulta:** La IA envía la solicitud estructurada (JSON) al Backend.
+      - Para **turnos**, el Backend consulta la disponibilidad y aplica reglas de negocio.
+      - Para **precios**, el Backend busca el servicio consultado en la base de datos y recupera su valor.
+   - **Respuesta:** El Backend devuelve la información y la IA redacta un mensaje amigable confirmando la cita o informando el precio.
 
 3. **Módulo de Fallback (Contingencia ante Fallos de IA):**
    Si la IA no comprende la solicitud tras múltiples intentos o la API no responde, el sistema **nunca bloquea al usuario** y despliega 3 opciones de escape instantáneas:
@@ -38,10 +42,10 @@ Plataforma web diseñada para profesionales independientes y comercios de proxim
 
 Para garantizar la estabilidad y evitar inconsistencias, las responsabilidades están estrictamente delimitadas:
 
-- 🤖 **IA (Interpretador Conversacional):** Su función se limita a la interfaz conversacional. Interpreta la intención del usuario, extrae parámetros estructurados y redacta la respuesta final. No ejecuta reglas de negocio ni accede directamente a la base de datos.
-- ⚙️ **Backend (Lógica de Negocio):** Es el núcleo operativo (Node.js/Express). Valida los datos recibidos de la IA, consulta la disponibilidad real, aplica restricciones de agenda, registra/cancela turnos y maneja la persistencia.
-- 🗄️ **Base de Datos (Persistencia):** Almacena la información del sistema (MySQL): usuarios, servicios, agendas y estados de los turnos.
-- 💻 **Frontend (Interfaz de Usuario):** Interfaz web (React) para que el cliente interactúe con el chat/fallback y para que el profesional administre su agenda.
+- 🤖 **IA (Interpretador Conversacional):** Su función se limita a la interfaz conversacional. Interpreta la intención del usuario (reservar turno o consultar precio), extrae parámetros estructurados y redacta la respuesta final. No ejecuta reglas de negocio ni accede directamente a la base de datos.
+- ⚙️ **Backend (Lógica de Negocio):** Es el núcleo operativo (Node.js/Express). Valida los datos recibidos de la IA, consulta disponibilidad real, busca información de servicios (precios/duración), aplica restricciones, registra/cancela turnos y maneja la persistencia.
+- 🗄️ **Base de Datos (Persistencia):** Almacena la información del sistema (MySQL): usuarios, servicios (incluyendo sus precios y duración), agendas y estados de los turnos.
+- 💻 **Frontend (Interfaz de Usuario):** Interfaz web (React) para que el cliente interactúe con el chat/fallback y para que el profesional administre su agenda y catálogo.
 
 ---
 
@@ -50,11 +54,12 @@ Para garantizar la estabilidad y evitar inconsistencias, las responsabilidades e
 ### 🔹 Cliente
 - Registro inicial (Nombre, Apellido, Teléfono, Contraseña, Email opcional) e inicio de sesión seguro (Teléfono + Contraseña).
 - Solicitar nuevos turnos mediante el chat conversacional asistido por IA.
+- Consultar precios de los servicios ofrecidos a través de la IA.
 - Módulo de contingencia (reserva manual, WhatsApp o mapa) ante fallos de IA.
 - Consultar y cancelar turnos activos desde su perfil.
 
 ### 🔹 Profesional / Administrador
-- Configurar servicios (alta, baja, modificación de precios y duración).
+- Configurar servicios: Alta, baja y modificación detallada (gestión de nombre, precio y duración).
 - Configurar horarios de atención y días de disponibilidad.
 - Dashboard de gestión: vista de turnos del día, próximos turnos y métricas de ocupación.
 
@@ -65,8 +70,10 @@ Para garantizar la estabilidad y evitar inconsistencias, las responsabilidades e
 ### 🟢 Incluido en el MVP
 - **Alcance Unipersonal:** El sistema está diseñado para la gestión de un negocio operado por un único profesional/dueño (mono-profesional).
 - **Autenticación:** Roles diferenciados para Clientes (Registro completo e inicio con Teléfono + Clave) y Profesional (Credenciales Admin).
-- **Chat conversacional:** Con procesamiento de lenguaje natural y Módulo de Contingencia triple.
+- **Chat conversacional:** Con procesamiento de lenguaje natural capaz de gestionar **reservas de turnos** y responder a **consultas de precios** de los servicios registrados.
+- **Módulo de Contingencia:** Opciones de escape (Fallback) ante fallos de comunicación.
 - **Reglas de reserva:** Confirmación en tiempo real según disponibilidad en MySQL, cancelación y reprogramación.
+- **Configuración de Servicios:** Gestión integral de los servicios prestados, incluyendo definición y actualización de precios y duración.
 - **Dashboard del Profesional:** Vista rápida de agenda y métricas simples de ocupación.
 
 ### 🔴 Fuera del MVP (Para futuras versiones)
@@ -125,14 +132,17 @@ flowchart LR
         F --> E
     end
 
-    %% SUBGRAPH 2: CANAL IA
-    subgraph S2 ["2. Reserva por IA"]
+    %% SUBGRAPH 2: CANAL IA (RESERVA Y PRECIOS)
+    subgraph S2 ["2. Interacción por IA"]
         direction TB
-        E --> G[Cliente pide turno por Chat]
-        G --> H[IA valida con Backend]
-        H --> I{¿IA activa y hay cupo?}
-        I -- Sí --> J[Backend reserva en DB] --> K[IA confirma reserva]
-        I -- No / Error --> L[Alerta: IA No Disponible]
+        E --> G[Cliente envía mensaje]
+        G --> H["IA interpreta intención<br>(Reserva o Precio)"]
+        H --> H1{¿Turno o Precio?}
+        H1 -- Precio --> H2[Backend busca precio en DB] --> K1[IA informa precio]
+        H1 -- Turno --> H3[IA valida datos de reserva]
+        H3 --> I{¿IA activa y hay cupo?}
+        I -- Sí --> J[Backend reserva en DB] --> K2[IA confirma reserva]
+        I -- No / Error --> L[Alerta: IA No Disponible / Sin Cupo]
     end
 
     %% SUBGRAPH 3: FALLBACK TRIPLE

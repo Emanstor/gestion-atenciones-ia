@@ -31,10 +31,11 @@ Plataforma web diseñada para profesionales independientes y comercios de proxim
    - **Respuesta:** El Backend devuelve la información y la IA redacta un mensaje amigable confirmando la cita o informando el precio.
 
 3. **Módulo de Fallback (Contingencia ante Fallos de IA):**
-   Si la IA no comprende la solicitud tras múltiples intentos o la API no responde, el sistema **nunca bloquea al usuario** y despliega 3 opciones de escape instantáneas:
+   Si la IA no comprende la solicitud tras múltiples intentos o la API no responde, el sistema **nunca bloquea al usuario** y despliega 4 opciones de escape instantáneas:
    - **1. Reserva Manual:** Grilla horaria/calendario interactivo para seleccionar turno disponible directamente en el Backend.
-   - **2. Contacto por WhatsApp:** Enlace directo con mensaje prellenado para comunicarse con el local.
-   - **3. Atención Presencial:** Ficha con dirección física, horarios de atención y enlace a Google Maps.
+   - **2. Botón de Precios:** Acceso directo a una lista/catálogo con los servicios vigentes y sus respectivos costos.
+   - **3. Contacto por WhatsApp:** Enlace directo con mensaje prellenado para comunicarse con el local.
+   - **4. Atención Presencial (Local):** Ficha con dirección física, días y horarios de atención, y enlace a Google Maps.
 
 ---
 
@@ -55,7 +56,7 @@ Para garantizar la estabilidad y evitar inconsistencias, las responsabilidades e
 - Registro inicial (Nombre, Apellido, Teléfono, Contraseña, Email opcional) e inicio de sesión seguro (Teléfono + Contraseña).
 - Solicitar nuevos turnos mediante el chat conversacional asistido por IA.
 - Consultar precios de los servicios ofrecidos a través de la IA.
-- Módulo de contingencia (reserva manual, WhatsApp o mapa) ante fallos de IA.
+- Módulo de contingencia (reserva manual, botón de precios, WhatsApp o información del local) ante fallos de IA.
 - Consultar y cancelar turnos activos desde su perfil.
 
 ### 🔹 Profesional / Administrador
@@ -71,7 +72,7 @@ Para garantizar la estabilidad y evitar inconsistencias, las responsabilidades e
 - **Alcance Unipersonal:** El sistema está diseñado para la gestión de un negocio operado por un único profesional/dueño (mono-profesional).
 - **Autenticación:** Roles diferenciados para Clientes (Registro completo e inicio con Teléfono + Clave) y Profesional (Credenciales Admin).
 - **Chat conversacional:** Con procesamiento de lenguaje natural capaz de gestionar **reservas de turnos** y responder a **consultas de precios** de los servicios registrados.
-- **Módulo de Contingencia:** Opciones de escape (Fallback) ante fallos de comunicación.
+- **Módulo de Contingencia:** Opciones de escape (4 alternativas visuales) ante fallos de comunicación de la IA.
 - **Reglas de reserva:** Confirmación en tiempo real según disponibilidad en MySQL, cancelación y reprogramación.
 - **Configuración de Servicios:** Gestión integral de los servicios prestados, incluyendo definición y actualización de precios y duración.
 - **Dashboard del Profesional:** Vista rápida de agenda y métricas simples de ocupación.
@@ -142,20 +143,27 @@ flowchart LR
         H1 -- Turno --> H3[IA valida datos de reserva]
         H3 --> I{¿IA activa y hay cupo?}
         I -- Sí --> J[Backend reserva en DB] --> K2[IA confirma reserva]
-        I -- No / Error --> L[Alerta: IA No Disponible / Sin Cupo]
+        I -- No / Error --> L[Alerta: IA No Disponible / Sin Cupo / Fallo]
+        H2 -. Error .-> L
     end
 
-    %% SUBGRAPH 3: FALLBACK TRIPLE
+    %% SUBGRAPH 3: FALLBACK (4 OPCIONES)
     subgraph S3 ["3. Módulo de Contingencia"]
         direction TB
         L --> M1["📅 1. Reserva Manual (Calendario)"]
-        L --> M2["💬 2. Contacto por WhatsApp"]
-        L --> M3["📍 3. Dirección y Google Maps"]
+        L --> M4["💲 2. Botón de Precios"]
+        L --> M2["💬 3. WhatsApp Directo"]
+        L --> M3["📍 4. Info Local (Ubicación, Días y Horarios)"]
         M1 --> N[Reserva directa en DB]
     end
 
     %% CONEXIONES PRINCIPALES
     S1 ==> S2
+    S2 ==> S3
+
+    class S1 highlight;
+    class S2 highlight;
+    class S3 fallback;
     S2 ==> S3
 
     class S1 highlight;
